@@ -1,0 +1,78 @@
+@SET MODEL ../02-MLP-train/final-training/model/
+#@SET MODEL ../._RESULTS_/02-MLP-train/model/
+
+&GLOBAL
+  PROJECT ICE-Ih
+  PRINT_LEVEL LOW
+  RUN_TYPE MD
+&END GLOBAL
+
+&MOTION
+  &MD
+    STEPS 20000
+    TIMESTEP [fs] 1
+    ENSEMBLE NVT
+    TEMPERATURE 270
+    &THERMOSTAT
+      TYPE CSVR
+      &CSVR
+        TIMECON [fs] 200
+      &END CSVR
+    &END THERMOSTAT
+  &END MD
+  &PRINT
+    &TRAJECTORY
+      &EACH
+        MD 4
+      &END EACH
+    &END TRAJECTORY
+    &VELOCITIES
+      &EACH
+        MD 4
+      &END EACH
+    &END VELOCITIES
+    &FORCES
+      &EACH
+        MD 4
+      &END EACH
+    &END FORCES
+    &RESTART OFF
+    &END RESTART
+    &RESTART_HISTORY OFF
+    &END RESTART_HISTORY
+  &END PRINT
+&END MOTION
+
+&FORCE_EVAL
+  METHOD  NNP
+  &NNP
+    NNP_INPUT_FILE_NAME ${MODEL}/nnp-000/input.nn
+    SCALE_FILE_NAME     ${MODEL}/nnp-000/scaling.data
+    &MODEL
+       WEIGHTS          ${MODEL}/nnp-000/weights
+    &END MODEL
+    &MODEL
+       WEIGHTS          ${MODEL}/nnp-001/weights
+    &END MODEL
+    &MODEL
+       WEIGHTS          ${MODEL}/nnp-002/weights
+    &END MODEL
+    &MODEL
+       WEIGHTS          ${MODEL}/nnp-003/weights
+    &END MODEL
+  &END NNP
+  &SUBSYS
+    &TOPOLOGY
+      CONN_FILE_FORMAT OFF
+      COORD_FILE_NAME ice-Ih.pdb
+      COORD_FILE_FORMAT PDB
+    &END TOPOLOGY
+    &CELL
+      ABC 13.489   15.576   14.641
+      PERIODIC XYZ
+    &END CELL
+    &KIND H
+      MASS 2.0
+    &END KIND
+  &END SUBSYS
+&END FORCE_EVAL
