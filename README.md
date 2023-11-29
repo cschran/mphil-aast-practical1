@@ -33,6 +33,7 @@ Once you are in the directory, execute the following command to setup the correc
 
 ### Run AIMD simulation
 The directory `01-AIMD-ice` contains the input files for running a short NVT simulation of ice Ih using 96 molecules of water in a periodic box.
+Change the provided input file `aimd.inp` to perform 20 simulation steps at a temperature of 250K.
 
 The simulation can be launched with the following command:\
 `mpirun -n 4 /data/cerberus1/cs2121/cp2k/exe/Linux-intel-x86_64/cp2k.popt aimd.inp > aimd.out &`
@@ -46,6 +47,7 @@ Luckily, there are bigger computing resources available on which this can run fa
 
 ### Train C-NNP model
 In the next step, we will use a subset of the generated configurations to train a machine learning potential. `02-MLP-train` contains the relevant input files.
+Take a look at the python script `create-model.py` and change it so that you select 200 structures for your training set.
 
 The training can be started with the following command:\
 `python3 create-model.py`
@@ -54,6 +56,7 @@ This will again take some time. While this is running, take a look at the `jupyt
 
 ### Run C-NNP simulation
 We now have everything to use our model in a simulation. `02-MLP-ice` contains the relevant input files.
+As bfore, you will have to change the provided input file `cnnp.inp`. This time, perform 20000 simulation steps at a temperature of 250K.
 
 The simulation can be launched with the following command:\
 `mpirun -n 4 /data/cerberus1/cs2121/cp2k/exe/Linux-intel-x86_64/cp2k.popt aimd.inp > aimd.out &`
@@ -66,6 +69,8 @@ In order to find out how good our model reproduces the reference AIMD simulation
 
 This validation test can be performed with the following command:\
 `python3 score-all.py`
+
+Results of this validation test will be analysed using jupyter-notebook.
 
 ### Timing Comparison
 Using your obtained timings for the AIMD and CNNP simulations, compute the speed-up enabled by the MLP.

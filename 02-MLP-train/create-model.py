@@ -34,8 +34,9 @@ print()
 print(f'Number of structures loaded: {len(structures)}')
 print()
 
-# Select 50 random structures for training set
-train = structures.get(structures.sample(200))
+# Select 200 random structures for training set
+n_train = XXXXXX
+train = structures.get(structures.sample(n_train))
 print()
 print(f'Number of structures for training: {len(train)}')
 print()
